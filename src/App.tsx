@@ -1,24 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNote, deleteNote } from './actions';
 import './App.css';
+import { NewNoteInput } from './newNoteInput';
+import type { NotesState } from './notesReducer';
 
 function App() {
+  const notes = useSelector<NotesState, NotesState['notes']>(
+    (state) => state.notes
+  );
+
+  const dispatch = useDispatch();
+
+  const onAddNote = (note: string) => {
+    dispatch(addNote(note));
+  };
+
+  const onDeleteNotes = (note: string) => {
+    dispatch(deleteNote(note));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App-header">
+      <NewNoteInput addNote={onAddNote} />
+      {/* <hr /> */}
+      <ul>
+        {notes.map((note) => (
+          <li onClick={() => onDeleteNotes(note)} key={note}>
+            {note}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
